@@ -1,11 +1,11 @@
 <template>
    <div class="row">
         <div class="col s12">
-          <div class="card-panel blue-grey darken-1">
+          <div class="card-panel blue darken-4">
             <div class="card-content white-text">
               <span class="card-title">Login</span>
              <div class="row">
-                <form class="col s12">
+                <form class="col s12" @submit.prevent="onSubmit">
                     <div class="row">
                         <div class="input-field col s12">
                         <input id="email" type="email" class="validate" v-model="email" autocomplete="off" >
@@ -24,26 +24,45 @@
                 </form>
                 </div>
             </div>
-            <!-- <div class="card-action">
-              <a href="#">This is a link</a>
-              <a href="#">This is a link</a>
-            </div> -->
+            
           </div>
         </div>
    </div>
 </template>
 
 <script>
-
-import axiois from 'axios'
+import axios from 'axios'
+import { mapMutations,mapState } from 'vuex'
 export default {
 
     data:()=>({
       email:"" ,
-      password:"" 
+      password:"" ,
+      message:""
     }),methods:{
-        onSubmit(){
-            
+        ...mapMutations(["checkLogin"]),
+       async onSubmit(){
+          console.log(this.$store)
+         var {email,password}=this
+            this.message="";
+            try {
+                const response= await axios.post("/user/login",{email,password})
+                if (response.status==200){
+                    localStorage.setItem("token",56)
+                    this.checkLogin()
+                    Materialize.toast("success", 10000) 
+
+                }
+                
+            } catch (error) {
+                //console.error(error) // from creation or business logic
+                console.log(error.response.data.message)
+                this.message=error.response.data.message
+               Materialize.toast(this.message, 10000,"red") 
+            }
+             
+         
+          
         }
     }
 };

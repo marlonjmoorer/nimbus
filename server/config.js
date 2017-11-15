@@ -1,6 +1,6 @@
 var dotenv = require('dotenv')
 var fs=require("fs")
-var config = dotenv.parse(fs.readFileSync('.env'))
+var config = dotenv.parse(fs.readFileSync('./server/.env'))
 config.grant={
         "server": {
           "protocol": "http",

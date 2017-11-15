@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="blue darken-1">
     <nav-bar/>
     <div class="container">
     <router-view></router-view>
@@ -15,12 +15,16 @@
       NavBar
     },
     created(){
+      console.log(this.$store.state)
     
     }
   }
 
 </script>
 
-<style>
- 
+<style >
+#app,html,body{
+  height: 100vh;
+
+}
 </style>

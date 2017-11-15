@@ -2,7 +2,7 @@ const express = require('express')
 const db = require('../database');
 const router= express.Router()
 var bcrypt = require('bcrypt');
-const saltRounds = 10
+const saltRounds =10
 
 router.post("/signup",async(req,res)=>{
    const {email ,password}=req.body
@@ -10,7 +10,7 @@ router.post("/signup",async(req,res)=>{
     if(!email ||!password){return res.status(500).json({message:"Invalid data"}) }
     var exist=await users.findOne({email})
     if(exist){
-        return res.status(500).json({message:"User Already Exist!"})
+        return res.status(409).json({message:"User Already Exist!"})
     }
     const encrypted= bcrypt.hashSync(password,saltRounds)
     var result= await users.insert({email,password:encrypted})
