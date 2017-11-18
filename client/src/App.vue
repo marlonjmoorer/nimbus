@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="blue darken-1">
     <nav-bar/>
-    <div class="container">
+    <div class="wrapper">
     <router-view></router-view>
     </div>
   </div>
@@ -14,9 +14,12 @@
     components:{
       NavBar
     },
+    mounted(){
+      
+    },
     created(){
-      console.log(this.$store.state)
-    
+      console.log(this.$store)
+      //this.$store.dispatch("authCheck")
     }
   }
 
@@ -26,5 +29,16 @@
 #app,html,body{
   height: 100vh;
 
+}
+
+#app ,.wrapper{
+  display:flex;
+  flex-direction:column;
+  height: 100vh;
+
+}
+
+.main>*,.wrapper> *{
+flex: 1;
 }
 </style>

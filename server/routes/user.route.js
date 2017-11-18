@@ -28,6 +28,7 @@ router.post("/login",async(req,res)=>{
     if(user){
         if(bcrypt.compareSync(password,user.password)){
             req.session.user=user
+            res.cookie("SESSION", user._id, {maxAge:1*24*60*60*1000})
             return res.json({message:"Login Successful"})
         }else{
             return res.status(500).json({message:"Invalid password"})
@@ -37,4 +38,17 @@ router.post("/login",async(req,res)=>{
     }
 })
 
+
+router.get('/logout', (req, res, next) =>{
+    if (req.session) {
+      // delete session object
+      req.session.destroy((err)=> {
+        if(err) {
+          return next(err);
+        } else {
+          return res.redirect('/');
+        }
+      });
+    }
+});
 module.exports=router;

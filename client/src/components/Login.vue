@@ -32,7 +32,7 @@
 
 <script>
 import axios from 'axios'
-import { mapMutations,mapState } from 'vuex'
+import { mapMutations,mapState ,mapActions} from 'vuex'
 export default {
 
     data:()=>({
@@ -40,29 +40,23 @@ export default {
       password:"" ,
       message:""
     }),methods:{
-        ...mapMutations(["checkLogin"]),
+       ...mapActions(["login"]),
        async onSubmit(){
-          console.log(this.$store)
+         Materialize.Toast.removeAll();
+         console.log(this)
          var {email,password}=this
             this.message="";
             try {
-                const response= await axios.post("/user/login",{email,password})
-                if (response.status==200){
-                    localStorage.setItem("token",56)
-                    this.checkLogin()
-                    Materialize.toast("success", 10000) 
-
-                }
-                
+                await this.login({email,password})
+                Materialize.toast("success", 10000) 
+                this.$router.push("/dashboard")
+                    
             } catch (error) {
                 //console.error(error) // from creation or business logic
                 console.log(error.response.data.message)
                 this.message=error.response.data.message
                Materialize.toast(this.message, 10000,"red") 
             }
-             
-         
-          
         }
     }
 };
