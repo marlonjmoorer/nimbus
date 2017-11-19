@@ -22,14 +22,14 @@ router.get('/dropbox/callback', function (req, res) {
 router.get('/google/callback', async function (req, res) {
     try{
         
-        let {access_token}=req.query
-        let response= await axios.get("https://www.googleapis.com/oauth2/v1/userinfo",{params:{access_token}})
+        let token=req.query
+        let response= await axios.get("https://www.googleapis.com/oauth2/v1/userinfo",{params:{access_token:token.access_token}})
         let {email}=response.data
         let account= await accounts.findOne({email,userId:req.session.userId})
         if(!account){
            var result =await accounts.insert({
                email,
-               access_token,
+               token,
                type:"drive",
                userId:req.session.userId
            })

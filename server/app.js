@@ -34,6 +34,6 @@ app.use(morgan(':method :url :status '))
 app.use(require("./routes/connect.route"))
 app.use("/accounts",require('./routes/accounts.route'));
 app.use("/user", require("./routes/user.route"))
-
+app.use("/explorer", require("./routes/explorer.route"))
 
 module.exports = app
