@@ -1,0 +1,22 @@
+[
+
+    {
+        "name":"Google Drive",
+        "image":"https://cdn.zapier.com/storage/services/bb735e567f1a1e9e3b8b7241497c2d43.128x128.png",
+        "code":"drive",
+        "url":"/connect/google"
+        
+    },
+    {
+        "name":"DropBox",
+        "image":"http://www.ajcsoft.com/images/dropbox-logo.png",
+        "code":"drop",
+        "url":"/connect/dropbox"   
+    }, 
+    {
+        "name":"FTP",
+        "image":"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Human-folder-remote-ftp.svg/128px-Human-folder-remote-ftp.svg.png",
+        "code":"ftp",
+        "url":"/connect/ftp"   
+    }
+]

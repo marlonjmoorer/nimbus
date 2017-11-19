@@ -31,7 +31,7 @@
 
 }
 
-#app ,.wrapper{
+/* #app ,.wrapper{
   display:flex;
   flex-direction:column;
   height: 100vh;
@@ -40,5 +40,5 @@
 
 .main>*,.wrapper> *{
 flex: 1;
-}
+} */
 </style>
