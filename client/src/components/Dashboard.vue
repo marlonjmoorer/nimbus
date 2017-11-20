@@ -12,7 +12,7 @@
                 @click.prevent="selectedAccount=account"
                 :class="{ active:selectedAccount==account}"
                 >
-                    <img :src="types[account.type]" alt="" class="circle">
+                    <img :src="types[account.type]" width="28" alt="" class="circle">
                     <p>
                         {{account.email}}<br>
                         {{account.type}}
@@ -24,8 +24,11 @@
         </div>
         <div class="col s9">
             <account-selection v-if="selectedAccount==null"></account-selection>
+            <template v-for="account in accounts" >
+                 <drive-explorer :account="account" :key="account._id" v-if="selectedAccount==account" ></drive-explorer>
+            </template>
+           
         </div>
-        
         </div>
     </div>
   
@@ -33,6 +36,7 @@
 
 <script>
 import AccountSelection from "./AccountSelection.vue";
+import DriveExplorer from './DriveExplorer.vue';
 import axios from "axios";
 export default {
   data: () => ({
@@ -43,7 +47,8 @@ export default {
     .reduce((result,item)=>({...result,...item}))
   }),
   components: {
-    AccountSelection
+    AccountSelection,
+    DriveExplorer
   },
   methods:{
       async loadAccounts(){

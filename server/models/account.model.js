@@ -9,4 +9,5 @@ class AccountModel extends BaseModel {
         return result;
     }
 }
+
 module.exports = new AccountModel()

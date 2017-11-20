@@ -7,7 +7,6 @@ const accounts= require('../models/account.model');
 
 const getServiceForAccount=async(id)=>{
     var token= await accounts.getTokenByAccountId(id)
-    var test= await axios.get(`https://www.googleapis.com/oauth2/v1/tokeninfo`,{params:{access_token:token.access_token}})
     return drive(token);
 }
 
@@ -16,10 +15,10 @@ router.get('/:id',async function (req, res) {
     try {
         var {id}= req.params
         var service= await getServiceForAccount(id)
-        service.files.list(function (err, resp) {
+        service.files.list({q:`'root' in parents`},function (err, resp) {
             // handle err and response
             if (err) {
-            return console.log(err);
+                return console.log(err);
             }
             resp.files.forEach(file => {
                 console.log(file.name)
@@ -38,8 +37,7 @@ router.get('/:id/:folderId',async function (req, res) {
         var {id,folderId}= req.params
         var service= await getServiceForAccount(id)
         service.files.list({
-            q:`'${folderId}' in parents`,
-            //resource: { parents: [ folderId ] },    
+            q:`'${folderId}' in parents`,  
         },function (err, resp) {
             // handle err and response
             if (err) {

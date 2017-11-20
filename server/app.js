@@ -31,8 +31,9 @@ app.use(morgan(':method :url :status '))
 
 //routes
 //app.use(require("./routes/auth.route"))
+require('./config/passport')(app)
 app.use(require("./routes/connect.route"))
-app.use("/accounts",require('./routes/accounts.route'));
+app.use("/accounts",require('./routes/account.route'));
 app.use("/user", require("./routes/user.route"))
 app.use("/explorer", require("./routes/explorer.route"))
 

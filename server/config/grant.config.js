@@ -14,7 +14,7 @@ module.exports = {
               "https://www.googleapis.com/auth/plus.me",
               "https://www.googleapis.com/auth/userinfo.email",
               "https://www.googleapis.com/auth/drive",
-              
-          ]
+          ],
+          custom_params: {access_type: "offline",prompt: 'consent'}
       }
 }

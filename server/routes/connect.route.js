@@ -23,7 +23,7 @@ router.get('/google/callback', async function (req, res) {
     try{
         
         let token=req.query
-        let response= await axios.get("https://www.googleapis.com/oauth2/v1/userinfo",{params:{access_token:token.access_token}})
+        let response= await axios.get("https://www.googleapis.com/oauth2/v1/tokeninfo",{params:{access_token:token.access_token}})
         let {email}=response.data
         let account= await accounts.findOne({email,userId:req.session.userId})
         if(!account){
