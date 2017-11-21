@@ -20,4 +20,7 @@ module.exports= class Explorer{
         delete(id){
             throw new TypeError("abstact")
         }
+        getFolderById(id){
+            throw new TypeError("abstact")
+        }
 }

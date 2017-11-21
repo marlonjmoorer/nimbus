@@ -25,9 +25,8 @@
         <div class="col s8">
             <account-selection v-if="selectedAccount==null"></account-selection>
             <template v-for="account in accounts" >
-                 <drive-explorer :account="account" :key="account._id" v-if="selectedAccount==account" ></drive-explorer>
+                <explorer :account="account" :key="account._id" v-if="selectedAccount==account" ></explorer>
             </template>
-           
         </div>
         </div>
     </div>
@@ -36,7 +35,7 @@
 
 <script>
 import AccountSelection from "./AccountSelection.vue";
-import DriveExplorer from './DriveExplorer.vue';
+import Explorer from './Explorer.vue';
 import axios from "axios";
 export default {
   data: () => ({
@@ -48,7 +47,7 @@ export default {
   }),
   components: {
     AccountSelection,
-    DriveExplorer
+    Explorer
   },
   methods:{
       async loadAccounts(){

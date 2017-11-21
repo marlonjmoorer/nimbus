@@ -12,13 +12,14 @@ module.exports= class  DropboxExplorer extends Explorer{
         return this.client.usersGetAccount({account_id:id})
     }
     listFiles(folderId){
-        this.client.filesListFolder({path: ''})
-        .then(function(response) {
-          console.log(response);
-        })
+       return this.client.filesListFolder({path: ''}).then(res=>res.entries)
         .catch(function(error) {
           console.log(error);
         });
+    }
+    async getFolderById(id){
+        const folder= await this.client.filesGetMetadata({path:id})
+        return folder
     }
 
 
