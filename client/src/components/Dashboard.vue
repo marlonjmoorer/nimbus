@@ -1,10 +1,11 @@
 <template>
     <div class="card blue main">
         <div class="row">
-        <div class="col s3">
+        <div class="col s4">
             <a class="waves-effect waves-light btn" @click="selectedAccount=null">
                 <i class="material-icons left">library_add</i>Add
             </a>
+            
             <ul class="collection" >
                 <li class="collection-item avatar" 
                 v-for="account in accounts" 
@@ -17,12 +18,11 @@
                         {{account.email}}<br>
                         {{account.type}}
                     </p>
-                    <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+                    
                 </li>
-               
             </ul>
         </div>
-        <div class="col s9">
+        <div class="col s8">
             <account-selection v-if="selectedAccount==null"></account-selection>
             <template v-for="account in accounts" >
                  <drive-explorer :account="account" :key="account._id" v-if="selectedAccount==account" ></drive-explorer>
@@ -58,12 +58,12 @@ export default {
           } catch (error) {
               console.error(error)
           }
-          console.log(this.accounts)
+         
       }
   },
   mounted() {
-      console.log(this.types)
-      
+     
+       $(".dropdown-button").dropdown({ belowOrigin: true});
       this.loadAccounts()
    
   }

@@ -43,10 +43,8 @@ export default {
     }
   },
   mounted(){
-     console.log(this.loggedIn)
   },
   updated(){
-    console.log("yo")
     $(".dropdown-button").dropdown();
   }
 };

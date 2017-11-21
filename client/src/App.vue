@@ -18,8 +18,6 @@
       
     },
     created(){
-      console.log(this.$store)
-      //this.$store.dispatch("authCheck")
     }
   }
 

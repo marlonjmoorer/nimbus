@@ -5,6 +5,7 @@ const accounts= require('../models/account.model');
 
 const router = express.Router()
 const google = require('googleapis');
+const DropboxExplorer = require('../explorers/DropboxExplorer');
 
 
 router.use(async(req, res, next) => {
@@ -16,7 +17,19 @@ router.use(async(req, res, next) => {
     }
     next()
 })
-router.get('/dropbox/callback', function (req, res) {
+router.get('/dropbox/callback',async function (req, res) {
+    let token=req.query
+    let {account_id}= token.raw
+    var {email}=await new DropboxExplorer(token).getAccount(account_id)
+    let account= await accounts.findOne({email,userId:req.session.userId,type:"drop"})
+    if(!account){
+        await accounts.insert({
+            email,
+            token,
+            type:"drop",
+            userId:req.session.userId
+        })
+     }
     res.redirect('/');
 });
 router.get('/google/callback', async function (req, res) {
@@ -25,15 +38,14 @@ router.get('/google/callback', async function (req, res) {
         let token=req.query
         let response= await axios.get("https://www.googleapis.com/oauth2/v1/tokeninfo",{params:{access_token:token.access_token}})
         let {email}=response.data
-        let account= await accounts.findOne({email,userId:req.session.userId})
+        let account= await accounts.findOne({email,userId:req.session.userId,type:"drive"})
         if(!account){
-           var result =await accounts.insert({
+           await accounts.insert({
                email,
                token,
                type:"drive",
                userId:req.session.userId
            })
-           console.log(result)   
         }
 
         res.redirect('/#/dashboard');

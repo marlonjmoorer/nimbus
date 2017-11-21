@@ -45,7 +45,7 @@ const router= new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  console.log(to.meta)
+  
   if(to.meta.noAuth){
     if (store.state.loggedIn) {
       next("/")

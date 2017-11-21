@@ -16,5 +16,12 @@ module.exports = {
               "https://www.googleapis.com/auth/drive",
           ],
           custom_params: {access_type: "offline",prompt: 'consent'}
-      }
+      },
+      dropbox:{
+        key:'1qphscwx4b0pqto',
+        secret:'jc00gulufhcdqbw',
+        callback:"/dropbox/callback",
+        
+    }
+
 }

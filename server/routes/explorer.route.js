@@ -1,30 +1,25 @@
 
 const express = require('express')
 const axios = require('axios').default
+const explorers = require('../explorers');
+
 const router= express.Router()
-const drive = require('../explorers/drive');
+
 const accounts= require('../models/account.model');
 
 const getServiceForAccount=async(id)=>{
-    var token= await accounts.getTokenByAccountId(id)
-    return drive(token);
+    var acc= await accounts.findById(id)
+    return explorers(acc.type,acc.token)
 }
+
 
 router.get('/:id',async function (req, res) {
 
     try {
         var {id}= req.params
         var service= await getServiceForAccount(id)
-        service.files.list({q:`'root' in parents`},function (err, resp) {
-            // handle err and response
-            if (err) {
-                return console.log(err);
-            }
-            resp.files.forEach(file => {
-                console.log(file.name)
-            });
-            res.json(resp.files)
-        });
+        var files= await service.listFiles()
+        res.json({folder:"",files})
     } catch (error) {
         console.log(error)
     }
@@ -46,7 +41,7 @@ router.get('/:id/:folderId',async function (req, res) {
             resp.files.forEach(file => {
                 console.log(file.name)
             });
-            res.json(resp.files)
+            res.json({folder:'',files:resp.files})
         }); 
 })
 
