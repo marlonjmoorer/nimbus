@@ -5,20 +5,23 @@
             <a class="waves-effect waves-light btn" @click="selectedAccount=null">
                 <i class="material-icons left">library_add</i>Add
             </a>
+            <a class="waves-effect waves-light btn" v-if="selectedAccount!=null" @click="deleteAccount">
+                <i class="material-icons left">delete</i>Delete
+            </a>
             
             <ul class="collection" >
                 <li class="collection-item avatar" 
                 v-for="account in accounts" 
                 :key="account.email"
                 @click.prevent="selectedAccount=account"
-                :class="{ active:selectedAccount==account}"
+                :class="{ active :selectedAccount==account}"
+                
                 >
-                    <img :src="types[account.type]" width="28" alt="" class="circle">
+                    <img :src="types[account.type]" width="12" alt="" class="circle">
                     <p>
                         {{account.email}}<br>
-                        {{account.type}}
                     </p>
-                    
+                   
                 </li>
             </ul>
         </div>
@@ -54,10 +57,22 @@ export default {
           try {
               let res=await  axios.get("/accounts")
               this.accounts=res.data
-          } catch (error) {
+              this.selectedAccount=null
+          }catch (error) {
               console.error(error)
           }
-         
+      },
+      async deleteAccount(){
+          try {
+              if(confirm("Are you sure you want to remove this account?")){
+                  await  axios.post(`/accounts/disconnect/${this.selectedAccount._id}`)
+                  
+                  this.loadAccounts()
+              }
+               //let res=await  axios.get(`/accounts/disconnect/`)
+          }catch (error) {
+              console.log(error)
+          }
       }
   },
   mounted() {

@@ -5,6 +5,7 @@ import Signup from './components/Signup.vue';
 import Login from './components/Login.vue';
 import Dashboard from './components/Dashboard.vue';
 import store from './store';
+import FtpForm from './components/FtpForm.vue';
 
 Vue.use(Router)
 
@@ -40,6 +41,10 @@ const router= new Router({
       component: Dashboard,
       meta: { requiresAuth: true },
      
+    },{
+      path:'/ftp',
+      component:FtpForm,
+      meta:{requiresAuth:true}
     }
   ]
 })

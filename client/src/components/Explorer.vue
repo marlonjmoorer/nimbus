@@ -42,12 +42,14 @@
 import axios from "axios";
 import DriveView from './ExplorerViews/DriveView.vue';
 import DropboxView from './ExplorerViews/DropboxView.vue';
+import FtpView from './ExplorerViews/FtpView.vue';
 
 export default {
     props:["account"],
     components:{
         DriveView,
-        DropboxView
+        DropboxView,
+        FtpView
     },
     data() {
         return {
@@ -118,6 +120,9 @@ export default {
                 break;
             case "drop":
                 this.explorerComponent="dropboxView"
+                break;
+             case "ftp":
+                this.explorerComponent="ftpView"
                 break;
 
         }

@@ -17,6 +17,6 @@
         "name":"FTP",
         "image":"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Human-folder-remote-ftp.svg/128px-Human-folder-remote-ftp.svg.png",
         "code":"ftp",
-        "url":"/connect/ftp"   
+        "url":"/#/ftp"   
     }
 ]

@@ -1,10 +1,10 @@
 const express = require('express')
 const axios = require('axios').default;
+const FtpClient = require('ssh2-sftp-client');
+const AWS = require('aws-sdk');
 const users= require('../models/user.model')
 const accounts= require('../models/account.model');
-
 const router = express.Router()
-const google = require('googleapis');
 const DropboxExplorer = require('../explorers/DropboxExplorer');
 
 
@@ -56,5 +56,53 @@ router.get('/google/callback', async function (req, res) {
     }
    
 })
+
+router.post("/ftp/signin",async(req,res)=>{
+    console.log("")
+    let{host,port,key,username,password}=req.body
+    var client= new FtpClient()
+    try {
+        await client.connect({host,port,privateKey:key,username,password})
+        let account= await accounts.findOne({host,username})
+        if(!account){
+           await accounts.insert({
+               host,
+               type:"ftp",
+               username,
+               email:username,
+               userId:req.session.userId,
+               token:{
+                    host,
+                    privateKey:key,
+                    password,
+                    username,
+                    port
+               }
+           })
+           res.redirect('/#/dashboard');
+        }
+        res.end()
+    } catch (error) {
+        res.status(500).send(error.message)
+    } 
+})
+
+router.get('/amazon/callback',async function (req, res) {
+    let token=req.query
+    const credentials = new AWS.WebIdentityCredentials({
+        RoleArn: '',
+        ProviderId: 'www.amazon.com',
+        WebIdentityToken: token.access_token
+    });
+    
+    var s3= new AWS.S3({
+        credentials,
+        params: {Bucket: 'mmoorer',Region:"us-east-1"}
+    })
+    s3.listObjects({Delimiter:"/uploads"}).promise().then(r=>{
+        console.log(r)
+    })
+    res.redirect('/');
+});
 
 module.exports = router

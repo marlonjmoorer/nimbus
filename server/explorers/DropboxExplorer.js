@@ -12,7 +12,8 @@ module.exports= class  DropboxExplorer extends Explorer{
         return this.client.usersGetAccount({account_id:id})
     }
     listFiles(folderId){
-       return this.client.filesListFolder({path: ''}).then(res=>res.entries)
+        const id= folderId||""
+       return this.client.filesListFolder({path: id}).then(res=>res.entries)
         .catch(function(error) {
           console.log(error);
         });
