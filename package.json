@@ -7,8 +7,8 @@
     "serve": "nodemon --inspect index.js --ignore client/ ",
     "start": "node index.js",
     "build": "webpack",
-    "preinstall":"npm install --only=dev",
-    "postinstall": "npm run build"
+    "heroku-prebuild": "npm install --only=dev",
+    "heroku-postbuild": "npm install && npm run build"
   },
   "author": {
     "url": "http://tomquirk.com.au",
@@ -79,7 +79,6 @@
     "ignore": [
       "client/dist/**"
     ]
-  },
-  "heroku-prebuild": "npm install --only=dev",
-  "heroku-postbuild": "npm install && npm run build"
+  }
+
 }
