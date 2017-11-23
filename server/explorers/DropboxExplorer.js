@@ -19,6 +19,13 @@ module.exports= class  DropboxExplorer extends Explorer{
         });
     }
     async getFolderById(id){
+        //id=id||""
+        if(!id){
+            return {
+                id:"",
+                name:"Root"
+            }
+        }
         const folder= await this.client.filesGetMetadata({path:id})
         return folder
     }

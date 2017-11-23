@@ -25,18 +25,15 @@
 
 <style >
 #app,html,body{
- /*  height: 100vh; */
+ height: 100vh;
 
 }
 
-/* #app ,.wrapper{
-  display:flex;
-  flex-direction:column;
-  height: 100vh;
+.wrapper{
+  
+  height: 100%
 
 }
 
-.main>*,.wrapper> *{
-flex: 1;
-} */
+
 </style>

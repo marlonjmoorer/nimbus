@@ -8,7 +8,18 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-      loggedIn:Cookie.get("SESSION")!=null
+      loggedIn:Cookie.get("SESSION")!=null,
+      path:[],
+      currentFolder:{id:null},
+      selectedFile:null,
+      selectedAccount:null,
+      currentFiles:[],
+      loading:true,
+      accounts:[],
+      uploadQueue:[],
+      accountTypes:require("./accountTypes")
+      .map(t=>({[t.code]:t.image}))
+      .reduce((result,item)=>({...result,...item}))
     },
     mutations: {
       LOGIN_SUCCESS(state) {
@@ -17,7 +28,44 @@ export default new Vuex.Store({
       LOGOUT(state) {
         Cookie.remove("SESSION")
         state.loggedIn  = false;
+      },
+      DESCEND(state,{files,folder}){
+        state.path.push(folder)
+        state.currentFolder=folder
+        state.currentFiles=files
+      },
+      ASCEND(state,{files,folder}){
+        let index= state.path.findIndex(seg=>seg.id==folder.id)
+        console.log(index)
+        if(state.path.length>1){
+          state.path= state.path.slice(0,index+1)
+        }
+        state.currentFolder=folder
+        state.currentFiles=files
+       
+      },
+      SELECT_ACCOUNT(state,account){
+        if(state.selectedAccount!=account){
+          state.path=[]
+          state.selectedFile=null
+          state.selectedAccount=account
+        }
+      },
+      SET_ACCOUNTS(state,accounts){
+        state.accounts=accounts
+      },
+      LOADING(state,loading){
+        state.loading=loading
+      },
+      SELECT_FILE(state,file){
+        state.selectedFile=file
+      },
+      QUEUE_UPLOAD(state,file){
+          state.uploadQueue.push(file)
       }
+
+
+      
     },
     actions:{
       async login({commit},data){
@@ -27,12 +75,46 @@ export default new Vuex.Store({
         }
       },
       async logout({commit}){
-        commit("LOGOUT")
+        var response=await axios.get("/user/logout")
+        if(response.status==200) {
+          commit("LOGOUT")
+        }
       },
-      async authCheck({commit}){
-        var response=await axios.get("/auth/isLoggedIn")
-        if(response.data){
-          commit("LOGIN_SUCCESS")
+      async openFolder({commit,state},id) {
+        let url=id?`/explorer/${state.selectedAccount._id}/${id}`:`/explorer/${state.selectedAccount._id}`
+        commit("LOADING",true)
+
+         let res= await axios.get(url)
+         let {files,folder}=res.data
+         if(res.status==200){
+         
+            if(!state.currentFolder||state.currentFolder.id!=folder.id){
+              if(state.path.findIndex(seg=>seg.id==folder.id)!=-1){
+                commit("ASCEND",{files,folder})
+              }else{
+                commit("DESCEND",{files,folder})
+              }
+            }
+         }
+         commit("LOADING",false)
+      },
+      async loadAccounts ({commit}) {
+        let res=await  axios.get("/accounts")
+        if(res.status==200){
+          commit("SET_ACCOUNTS",res.data)
+          commit("SELECT_ACCOUNT",null)
+        }
+      },
+      async deleteAccount({commit,dispatch,state}){
+        if(confirm("Are you sure you want to remove this account")){
+          await  axios.post(`/accounts/disconnect/${state.selectedAccount._id}`)
+          dispatch("loadAccounts")
+        }
+      },
+      async uploadFile({commit},file){
+        console.log(file)
+        if(file){
+          commit("QUEUE_UPLOAD",file)
         }
       }
     }

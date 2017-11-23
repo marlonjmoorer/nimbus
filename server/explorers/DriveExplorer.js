@@ -31,6 +31,7 @@ module.exports= class  DriveExplorer extends Explorer{
        return this.client.getFileById(id)
     }
     async getFolderById(id){
+        id=id||"root"
        var folder=await  this.client.getFolderById(id)
        return folder.resource
     }

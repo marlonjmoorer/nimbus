@@ -14,7 +14,7 @@ const getServiceForAccount=async(id)=>{
 }
 
 
-router.get('/:id',async function (req, res) {
+/* router.get('/:id',async function (req, res) {
 
     try {
         var {id}= req.params
@@ -27,18 +27,19 @@ router.get('/:id',async function (req, res) {
     
     
     
-})
-router.get('/:id/:folderId',async function (req, res) {
+}) */
+router.get('/:id/:folderId?',async function (req, res) {
     
 
     try {
-         var {id,folderId}= req.params
+        var {id,folderId}= req.params
         var service= await getServiceForAccount(id)
         var files= await service.listFiles(folderId)
         var folder= await service.getFolderById(folderId)
         res.json({folder,files})
     } catch (error) {
-        
+        console.log(error)
+        res.status(500).end()
     }
        
         

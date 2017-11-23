@@ -1,8 +1,14 @@
 <template>
-    <div class="card blue main">
+    <div>
+    <div class="row">
+        <uploader v-if="uploadQueue.length>0"></uploader>
+    </div>
+   
+    <div class="row">
+         <div class="card blue main">
         <div class="row">
         <div class="col s4">
-            <a class="waves-effect waves-light btn" @click="selectedAccount=null">
+            <a class="waves-effect waves-light btn" @click="SELECT_ACCOUNT()">
                 <i class="material-icons left">library_add</i>Add
             </a>
             <a class="waves-effect waves-light btn" v-if="selectedAccount!=null" @click="deleteAccount">
@@ -13,11 +19,11 @@
                 <li class="collection-item avatar" 
                 v-for="account in accounts" 
                 :key="account.email"
-                @click.prevent="selectedAccount=account"
+                @click.prevent="SELECT_ACCOUNT(account)"
                 :class="{ active :selectedAccount==account}"
                 
                 >
-                    <img :src="types[account.type]" width="12" alt="" class="circle">
+                    <img :src="accountTypes[account.type]" width="12" alt="" class="circle">
                     <p>
                         {{account.email}}<br>
                     </p>
@@ -32,48 +38,35 @@
             </template>
         </div>
         </div>
+    </div> 
     </div>
-  
+   
+    </div>
 </template>
 
 <script>
 import AccountSelection from "./AccountSelection.vue";
 import Explorer from './Explorer.vue';
-import axios from "axios";
+import Uploader from './Uploader.vue';
+
+import { mapMutations,mapState,mapActions } from 'vuex'
 export default {
   data: () => ({
-    accounts: [],
-    selectedAccount:null,
-    types:require("../accountTypes")
-    .map(t=>({[t.code]:t.image}))
-    .reduce((result,item)=>({...result,...item}))
+
   }),
   components: {
     AccountSelection,
-    Explorer
+    Explorer,
+    Uploader
+  },
+  computed:{
+      ...mapState(["accounts","selectedAccount","accountTypes","uploadQueue"])
   },
   methods:{
-      async loadAccounts(){
-          try {
-              let res=await  axios.get("/accounts")
-              this.accounts=res.data
-              this.selectedAccount=null
-          }catch (error) {
-              console.error(error)
-          }
-      },
-      async deleteAccount(){
-          try {
-              if(confirm("Are you sure you want to remove this account?")){
-                  await  axios.post(`/accounts/disconnect/${this.selectedAccount._id}`)
-                  
-                  this.loadAccounts()
-              }
-               //let res=await  axios.get(`/accounts/disconnect/`)
-          }catch (error) {
-              console.log(error)
-          }
-      }
+     ...mapActions(["loadAccounts","deleteAccount"]),
+     ...mapMutations(["SELECT_ACCOUNT"]),
+     
+    
   },
   mounted() {
      
@@ -86,6 +79,6 @@ export default {
 
 <style>
 .main {
-  min-height: 100vh;
+  max-height: 100vh;
 }
 </style>

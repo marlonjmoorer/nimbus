@@ -18,10 +18,11 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use(session({
     secret: 'grant',
     store: new MongoStore({
-        dbPromise:connect()
+        dbPromise:connect(),
     }),
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    unset:"destroy"
 }))
 
 app.use(grant)

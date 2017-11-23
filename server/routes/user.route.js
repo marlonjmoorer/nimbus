@@ -1,3 +1,5 @@
+
+
 const express = require('express')
 const router= express.Router()
 const bcrypt = require('bcrypt');
@@ -38,16 +40,18 @@ router.post("/login",async(req,res)=>{
 })
 
 
-router.get('/logout', (req, res, next) =>{
+router.get('/logout', (req, res) =>{
     if (req.session) {
       // delete session object
       req.session.destroy((err)=> {
         if(err) {
-          return next(err);
+          return res.status('500').send('Failed to log out')
         } else {
           return res.redirect('/');
         }
       });
+    }else{
+        res.end()
     }
 });
 module.exports=router;

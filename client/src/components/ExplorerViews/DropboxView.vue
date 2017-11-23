@@ -1,6 +1,6 @@
 <template>
     <div  class="collection">
-        <a href="#" class="collection-item avatar black-text" @click.prevent="open(file)" v-for="file in files" :key="file.id">
+        <a href="#" class="collection-item avatar black-text" @dblclick="open(file)" @click.prevent="''"  v-for="file in  currentFiles" :key="file.id">
             <i class="material-icons circle black">{{file[".tag"]=="folder"?'folder':'insert_drive_file'}}</i>  
             <span class="">{{file.name}}</span> 
 
@@ -13,15 +13,14 @@
 </template>
 
 <script>
-import axios from "axios";
+import { mapMutations,mapState,mapActions } from 'vuex'
 export default {
-   props:["files","openFolder"],
-    data() {
-        return {
-            //files:[],
-        }
+  
+   computed:{
+        ...mapState(["currentFiles"])
     },
     methods:{
+        ...mapActions(["openFolder"]),
         open(item){
             if(item[".tag"]=="folder"){
                 this.openFolder(item.id)
