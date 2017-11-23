@@ -61,7 +61,11 @@ export default new Vuex.Store({
         state.selectedFile=file
       },
       QUEUE_UPLOAD(state,file){
-          state.uploadQueue.push(file)
+          state.uploadQueue.push({
+            file,
+            accountId:state.selectedAccount._id,
+            folder:state.currentFolder
+          })
       }
 
 

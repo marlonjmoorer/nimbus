@@ -1,6 +1,8 @@
+const fs = require('fs');
 const Explorer = require('./Explorer');
 const GoogleDrive = require("googledrive");
 const { google: g } = require('../config/grant.config');
+
 const client={
     installed: {
       "client_id":g.key,
@@ -18,7 +20,9 @@ module.exports= class  DriveExplorer extends Explorer{
         this.client=new GoogleDrive({client,token})
     }
     getAccount(id){
-       // return this.client.usersGetAccount({account_id:id})
+       // return this.client.usersGetAccount({account_id:id})'
+
+       //this.client.createFile()
     }
     async listFiles(folderId){
         const id= folderId||"root"
@@ -34,5 +38,19 @@ module.exports= class  DriveExplorer extends Explorer{
         id=id||"root"
        var folder=await  this.client.getFolderById(id)
        return folder.resource
+    }
+    async uploadFile(file,stream){
+        var folder=await  this.client.getFolderById("root")
+        const newFile = folder.createChildFile({
+            name: file.name,
+            mimeType: file.type|| 'application/octet-stream'
+        });
+        const result=await newFile.resumableCreate({
+            contentLength: file.size,
+            readableCallback: position => stream
+        }).catch(err=>{
+            console.log(err)
+        })
+        return ""
     }
 }

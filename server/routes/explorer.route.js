@@ -1,17 +1,9 @@
 
 const express = require('express')
 const axios = require('axios').default
-const {getServiceByType}= require('../explorers');
-
+const {getServiceForAccount}= require('../explorers');
 const router= express.Router()
-
 const accounts= require('../models/account.model');
-
-const getServiceForAccount=async(id)=>{
-    const acc= await accounts.findById(id)
-    const Service= getServiceByType(acc.type)
-    return new Service(acc.token)
-}
 
 
 /* router.get('/:id',async function (req, res) {
