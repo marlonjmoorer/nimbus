@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "serve": "nodemon --inspect index.js --ignore client/ ",
-    "start": "brunch watch --server",
-    "build": "brunch build --production"
+    "start": "node index.js",
+    //"ic": "cd client &&",
+    "build": "cd client && npm build"
   },
   "author": {
     "url": "http://tomquirk.com.au",
@@ -61,5 +62,6 @@
     "ignore": [
       "client/dist/**"
     ]
-  }
+  },
+  "heroku-postbuild": "npm install && npm run build"
 }

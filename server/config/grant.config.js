@@ -1,7 +1,7 @@
 module.exports = {
     server: {
         protocol: "http",
-        host: "localhost:3000",
+        host: process.env.hostname,
         state: true
     },
     google: {
