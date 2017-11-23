@@ -7,6 +7,7 @@
     "serve": "nodemon --inspect index.js --ignore client/ ",
     "start": "node index.js",
     "build": "webpack",
+    "preinstall":"npm install --only=dev",
     "postinstall": "npm run build"
   },
   "author": {
