@@ -6,7 +6,6 @@
   "scripts": {
     "serve": "nodemon --inspect index.js --ignore client/ ",
     "start": "node index.js",
-    //"ic": "cd client &&",
     "build": "cd client && npm build"
   },
   "author": {
