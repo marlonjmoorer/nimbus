@@ -10,7 +10,7 @@ const cookieParser = require('cookie-parser')
 const MongoStore = require('connect-mongo')(session);
 const grant = new Grant(require("./config/grant.config"));
 const app = express()
-
+const isProd=process.env.NODE_ENV=='production'
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
@@ -22,7 +22,8 @@ app.use(session({
     }),
     resave: false,
     saveUninitialized: false,
-    unset:"destroy"
+    unset:"destroy",
+    cookie:{secure:isProd}
 }))
 
 app.use(grant)
@@ -31,7 +32,6 @@ app.use(morgan(':method :url :status '))
 
 
 //routes
-//app.use(require("./routes/auth.route"))
 
 app.use(require("./routes/connect.route"))
 app.use("/accounts",require('./routes/account.route'));
