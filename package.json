@@ -62,5 +62,6 @@
       "client/dist/**"
     ]
   },
+  "heroku-prebuild": "npm install --only=dev",
   "heroku-postbuild": "npm install && npm run build"
 }
