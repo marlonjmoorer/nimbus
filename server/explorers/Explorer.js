@@ -8,7 +8,7 @@ module.exports= class Explorer{
         listFiles(folderId={}){
             throw new TypeError("abstact")
         }
-        uploadFile(file){
+        uploadFile(file,folderId,onProgess,onComplete){
             throw new TypeError("abstact")
         }
         getFileById(id){

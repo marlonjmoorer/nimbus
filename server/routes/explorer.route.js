@@ -1,25 +1,12 @@
-
 const express = require('express')
 const axios = require('axios').default
+const formidable = require('formidable');
 const {getServiceForAccount}= require('../explorers');
 const router= express.Router()
 const accounts= require('../models/account.model');
+const socket= require('../socket')
 
 
-/* router.get('/:id',async function (req, res) {
-
-    try {
-        var {id}= req.params
-        var service= await getServiceForAccount(id)
-        var files= await service.listFiles()
-        res.json({folder:"",files})
-    } catch (error) {
-        console.log(error)
-    }
-    
-    
-    
-}) */
 router.get('/:id/:folderId?',async function (req, res) {
     
 
@@ -48,11 +35,32 @@ router.get("/:id/file/:fileId",async function (req, res){
         console.log(resp)
         res.end()
     })
-
-
-
 })
 
+router.post("/upload",async(req,res)=>{
+   
+    try { 
+        let io= socket.getServer()
+        let form = new formidable.IncomingForm();
+        form.parse(req, async(err, fields, files)=> {
+            let service= await getServiceForAccount(fields.accountId)
+            console.log('object')
+            let channel=io.of(`/${files.file.id}`)
+            channel.on("connection",()=>{
+              //  console.log('test')
+            })
+            res.end()
+            service.uploadFile(files.file,fields.folderId,(percent)=>{
+               // console.log(percent+'%')
+                channel.emit("progress",percent)
+            })
+        });
+    } catch (error) {
+        console.log(error)
+        res.end()
+    }
+    
+})
 
 
 module.exports=router

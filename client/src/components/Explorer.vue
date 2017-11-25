@@ -19,7 +19,7 @@
                             <span >{{folder.name}}</span>
                         </a>
                     </template>
-                    <ul class="right hide-on-med-and-down">
+                    <ul class="right ">
                         <li><a class="dropdown-button" href="#!" data-activates="menu"><i class="material-icons right">more_vert</i></a></li>
                     </ul>
                 </div>  
