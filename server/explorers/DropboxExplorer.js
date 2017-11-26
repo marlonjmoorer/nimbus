@@ -32,7 +32,7 @@ module.exports= class  DropboxExplorer extends Explorer{
     }
 
    async  uploadFile(file,folderId,onProgess){
-        let stream= fs.createReadStream(file.path)
+        let stream= fs.createReadStream(file.path,{ highWaterMark: 1 *1024 * 1024 })
         let path=""
         if(folderId){
             let folder= await this.client.filesGetMetadata({path:folderId})
@@ -47,7 +47,8 @@ module.exports= class  DropboxExplorer extends Explorer{
                 async write(chunk, encoding, next){
                     if(!session){
                         session=await client.filesUploadSessionStart({
-                            contents:chunk
+                            contents:chunk,
+                            close:false
                         }).catch(err=>{
                             console.log(err)
                         })
@@ -58,9 +59,11 @@ module.exports= class  DropboxExplorer extends Explorer{
                                 session_id:session.session_id,
                                 offset:size
                             }
+                        }).catch(err=>{
+                            console.log(err)
                         })
                     }
-                    size+=chunk.byteLength
+                    size+=chunk.length
                     prog+= chunk.length;
                     if(onProgess)
                         onProgess(Math.floor(prog / file.size * 100))
@@ -68,6 +71,7 @@ module.exports= class  DropboxExplorer extends Explorer{
                     
                 },  
             })
+    
             stream.on("end",async()=>{
                 let result = await this.client.filesUploadSessionFinish({
                     commit:{
@@ -79,12 +83,15 @@ module.exports= class  DropboxExplorer extends Explorer{
                         session_id:session.session_id,
                         offset:size
                     }
+                }).catch(err=>{
+                    console.log(err)
                 })
                 console.log(result)
             })
             stream.pipe(writer)
-
-           /*  let started= false
+/* 
+           let started= false
+           let CHUNK_SIZE = 10 * 1024 * 1024
             stream.on('readable', async  ()=> {
                 if(!started){
                     let chunk;
