@@ -3,30 +3,24 @@ const {promisify} = require('util');
 const Explorer = require('./Explorer');
 const GoogleDrive = require("googledrive");
 const { key,secret } = require('../config/grant.config').google
-const {auth,drive} = require('googleapis')
 
-/* const client={
+
+const client={
     installed: {
-      "client_id":g.key,
-      "client_secret":g.secret,
-      "redirect_uris": [g.callback],
+      "client_id":key,
+      "client_secret":secret,
+      "redirect_uris": [],
       "auth_uri": "https://accounts.google.com/o/oauth2/auth",
       "token_uri": "https://accounts.google.com/o/oauth2/token"
     }
-} */
+}
 
 module.exports= class  DriveExplorer extends Explorer{
 
     constructor(token){
         super()
-        //this.client=new GoogleDrive({client,token})
-        let oauth= new auth.OAuth2(key,secret)
-        oauth.credentials=token
-        this.client= drive({
-            version: 'v3',
-            auth:oauth
-        })
-        this.oauth=oauth
+        this.client=new GoogleDrive({client,token})
+        
         
     }
     getAccount(id){
@@ -36,10 +30,10 @@ module.exports= class  DriveExplorer extends Explorer{
     }
     async listFiles(folderId){
         const id= folderId||"root"
-       let result= await promisify(this.client.files.list)({
-            q:`'${id}' in parents`
-        })
-        return result.files
+       let folder= await this.client.getFolderById(id)
+       let files=await folder.getChildren()
+
+       return files.map(i=>i.resource)
       
     }
     async getFileById(id){
@@ -48,85 +42,36 @@ module.exports= class  DriveExplorer extends Explorer{
     async getFolderById(id){
         id=id||"root"
 
-       let folder =await promisify(this.client.files.get)({
-        fileId:id
-       })
-       return folder
-       // this.client.files.get()
+       let folder =await this.client.getFolderById(id)
+
+       return folder.resource
     }
     async uploadFile(file,folderId,onProgess,onComplete){
 
-        let stream= fs.createReadStream(file.path)
+       
         let fileMetadata = {
             parents:[folderId],
             name:file.name,
-            ///mimeType: file.type
+            mimeType: file.type
         };
-        let media = {
-           mimeType: file.type,
-           body: stream
-        };
-        let headers={
-            'X-Upload-Content-Length':file.size,
-            'X-Upload-Content-Type':file.type,
-            'Content-Type':'application/json; charset=UTF-8',
-           // 'Content-Length': 38
-        }
-        let size= 0
-        stream.on("data",(chunk)=>{
+        let size=0
+        let onData=(chunk)=>{
             size += chunk.length;
             if(onProgess)
                 onProgess(Math.floor(size / file.size * 100))
-        }).on("end",()=>{
+        }
+        let onEnd=()=>{
             if(onComplete)
                 onComplete()
-        }).on("error",()=>{
-           // console.log('error')
-        })
-        
-        this.oauth.request({
-            url:"https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable",
-            method:"POST",
-            headers,
-            json: true,
-            body:fileMetadata
-        },(err,res,body)=>{
-            console.log("object")
-            let {location}=body.headers
-            this.oauth.request({
-                url:location,
-                method:'PUT',
-                headers:{
-                    "Content-Length":file.size
-                },
-                body:stream
-            },(err,res,body)=>{
-                console.log("object")
-            })
-        })
-        this.client.files.create({
-             resource: fileMetadata,
-            // uploadType:'resumable',
-            // headers,
-             media
-             //body:fileMetadata
-         },(err,result,res,test)=>{
-             console.log(result)
-             console.log(res.location)
-
-            /*  this.client.files.update({
-                uploadType:'resumable',
-             }) */
-
-         })
-       //stream.pipe(req)
-      /*  let result= await promisify(this.client.files.update)({
-            fileId:stub.id,
-            resource:fileMetadata,
-            addParents: folderId,
-        }).catch(err=>{
-            console.log(err)
-        })
-        return result */
+        }
+        const folder = await this.client.getFolderById(folderId)
+        const stub = folder.createChildFile(fileMetadata);
+        await stub.resumableCreate({
+            contentLength: file.size,
+            readableCallback: position => 
+                 fs.createReadStream(file.path,{ start: position })
+                .on("data",onData)
+        });
+        return stub.id
     }
 }

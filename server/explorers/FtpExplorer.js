@@ -21,7 +21,9 @@ module.exports= class  FtpExplorer extends Explorer{
     async getFolderById(id){
         const folder= await this.client.filesGetMetadata({path:id})
         return folder
+        
     }
+    
 
 
 }

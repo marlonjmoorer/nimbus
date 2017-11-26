@@ -51,7 +51,7 @@ router.post("/upload",async(req,res)=>{
             })
             res.end()
             service.uploadFile(files.file,fields.folderId,(percent)=>{
-               // console.log(percent+'%')
+                console.log(percent+'%')
                 channel.emit("progress",percent)
             })
         });
