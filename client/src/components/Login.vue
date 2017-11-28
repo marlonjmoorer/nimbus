@@ -1,33 +1,52 @@
 <template>
-   <div class="row">
-        <div class="col s12">
-          <div class="card-panel blue darken-4">
-            <div class="card-content white-text">
-              <span class="card-title">Login</span>
-             <div class="row">
-                <form class="col s12" @submit.prevent="onSubmit">
-                    <div class="row">
-                        <div class="input-field col s12">
-                        <input id="email" type="email" class="validate" v-model="email" autocomplete="off" >
-                        <label for="email">Email</label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="input-field col s12">
-                        <input id="password" type="password" class="validate" v-model="password" autocomplete="off" >
-                        <label for="password">Password</label>
-                        </div>
-                    </div>
-                     <button class="btn waves-effect waves-light" type="submit" name="action">Submit
-                        <i class="material-icons right">send</i>
-                    </button>
-                </form>
-                </div>
-            </div>
-            
-          </div>
-        </div>
-   </div>
+ <b-card bg-variant="dark" v-if="true" >
+       <b-container class="bv-example-row">
+        <b-row align-h="center">
+            <b-col md="5">
+                  <b-alert variant="danger"
+                        dismissible
+                        :show="message!=''"
+                        @dismissed="message=''">
+               {{message}}
+                </b-alert>
+                <b-form @submit="onSubmit">
+                    <b-card bg-variant="primary"  text-variant="white"
+                        header="Login"
+                        header-tag="header"
+                        class="mt-2">
+                        <b-img center src="https://www.mariowiki.com/images/thumb/8/8a/SMO_CLOUD.jpg/281px-SMO_CLOUD.jpg" fluid alt="Responsive image" />
+                            <b-form-group 
+                            label="Email address:" label-for="email"
+                            >
+                                <b-form-input id="email"
+                                            type="email"  required
+                                            v-model="email"
+                                            placeholder="Enter email">
+                                </b-form-input>
+                            </b-form-group>
+                            <b-form-group 
+                            label="Password:" label-for="password">
+                                <b-form-input id="password"
+                                            type="password"  required
+                                            v-model="password"
+                                            placeholder="Password">
+                                </b-form-input>
+                            </b-form-group>
+                            
+                            <b-row align-h="center">
+                                <b-col md="4">
+                                    <b-button  type="submit" variant="light">Submit</b-button>
+                                </b-col>
+                            </b-row>
+                    </b-card>
+                </b-form>
+            </b-col>
+        
+        </b-row>
+        </b-container>
+        
+   </b-card>
+
 </template>
 
 <script>
@@ -42,20 +61,20 @@ export default {
     }),methods:{
        ...mapActions(["login"]),
        async onSubmit(){
-         Materialize.Toast.removeAll();
+         
          console.log(this)
          var {email,password}=this
             this.message="";
             try {
                 await this.login({email,password})
-                Materialize.toast("success", 10000) 
+               
                 this.$router.push("/dashboard")
                     
             } catch (error) {
                 //console.error(error) // from creation or business logic
                 console.log(error.response.data.message)
                 this.message=error.response.data.message
-               Materialize.toast(this.message, 10000,"red") 
+              
             }
         }
     }

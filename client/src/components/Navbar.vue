@@ -1,50 +1,61 @@
 <template>
-  <div>
-     <ul id="dropdown1" class="dropdown-content">
-        <li><a href="#!">one</a></li>
-        <li><a href="#!">two</a></li>
-        <li class="divider"></li>
-        <li><a href="#!">three</a></li>
-      </ul>
-    <nav class="light-blue darken-1">
-    <div class="nav-wrapper">
-        <a href="#!" class="brand-logo">Logo</a>
-        <ul class="right ">
-          <template v-if="!loggedIn">
-              <li><router-link to="/signup"> Signup <i class="material-icons right">file_upload</i></router-link></li>
-              <li><router-link to="/login"> Login <i class="material-icons right">account_circle</i></router-link></li>
+  <b-navbar v-if="true" toggleable="md" type="dark" variant="primary">
+
+    <b-navbar-toggle target="nav_collapse">
+
+    </b-navbar-toggle>
+
+    <b-navbar-brand href="#">Nimbus</b-navbar-brand>
+
+    <b-collapse is-nav id="nav_collapse">
+
+
+
+      <!-- Right aligned nav items -->
+      <b-navbar-nav class="ml-auto">
+         <template v-if="!loggedIn">
+            <b-nav-item to="/signup" active href="#" >Signup <i class="fa fa-user-plus" aria-hidden="true"></i></b-nav-item>
+            <b-nav-item  to="/login" active href="#" >Login <i class="fa fa-sign-in" aria-hidden="true"></i></b-nav-item>
+         </template>
+      
+        <b-nav-item-dropdown v-else right>
+          <!-- Using button-content slot -->
+          <template slot="button-content">
+            <i class="fa fa-user" aria-hidden="true"></i>
           </template>
-           <template v-else>
-               <li><a href="#"@click="_logout"  > Logout<i class="material-icons right">exit_to_app</i></a></li>
-                <li><a class="dropdown-button" href="#!" data-activates="dropdown1">Dropdown<i class="material-icons right">arrow_drop_down</i></a></li>
-           </template>
-        </ul>
-    </div>
-    </nav>
-  </div>
+          <b-dropdown-item to="dashboard">Profile <i class="fa fa-male" aria-hidden="true"></i></b-dropdown-item>
+          <b-dropdown-item href="#" @click="_logout" >Signout <i class="fa fa-sign-out" aria-hidden="true"></i></b-dropdown-item>
+        </b-nav-item-dropdown>
+      </b-navbar-nav>
+
+    </b-collapse>
+</b-navbar>
+
+  
+  
+  
+ 
 </template>
 
 <script>
-import { mapMutations,mapState,mapActions } from 'vuex'
+import { mapMutations, mapState, mapActions } from "vuex";
 export default {
-  data:()=>({
-   // loggedIn:localStorage.token===null
+  data: () => ({
+    // loggedIn:localStorage.token===null
   }),
-  computed:{
-    ...mapState(['loggedIn'])
+  computed: {
+    ...mapState(["loggedIn"])
   },
-  methods:{
-
-    ...mapActions(["logout"])
-    ,async _logout(){
-      await this.logout()
-      console.log(this.$route)
-      this.$router.push("/")
+  methods: {
+    ...mapActions(["logout"]),
+    async _logout() {
+      await this.logout();
+      console.log(this.$route);
+      this.$router.push("/");
     }
   },
-  mounted(){
-  },
-  updated(){
+  mounted() {},
+  updated() {
     $(".dropdown-button").dropdown();
   }
 };
