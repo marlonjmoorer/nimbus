@@ -38,9 +38,10 @@ export default {
     send(data) {
         console.log(data)
         let form= new FormData()
-        form.append("file",data.file)
+        
         form.append("accountId",data.accountId)
         form.append("folderId",data.folder.id)
+        form.append("file",data.file)
         axios.post("/explorer/upload", form , {
           onUploadProgress: e => {
             console.log(e);

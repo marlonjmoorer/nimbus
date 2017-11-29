@@ -1,11 +1,17 @@
 const express = require('express')
 const axios = require('axios').default
 const formidable = require('formidable');
+const multer = require('multer');
 const {getServiceForAccount}= require('../explorers');
 const router= express.Router()
 const accounts= require('../models/account.model');
 const socket= require('../socket')
+const ExternalStorage = require('../explorers/ExternalStorage');
 
+const upload= multer({
+    storage:ExternalStorage,
+    highWaterMark:1*1024*1024
+})
 
 router.get('/:id/:folderId?',async function (req, res) {
     
@@ -37,9 +43,9 @@ router.get("/:id/file/:fileId",async function (req, res){
     })
 })
 
-router.post("/upload",async(req,res)=>{
+router.post("/upload",upload.single('file'),async(req,res)=>{
    
-    try { 
+    /* try { 
         let io= socket.getServer()
         let form = new formidable.IncomingForm();
         form.parse(req, async(err, fields, files)=> {
@@ -58,8 +64,8 @@ router.post("/upload",async(req,res)=>{
     } catch (error) {
         console.log(error)
         res.end()
-    }
-    
+    } */
+    res.end()
 })
 
 
