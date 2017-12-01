@@ -57,23 +57,11 @@ router.post("/upload",async(req,res)=>{
                if(err){throw err}
                res.json({jobId})
             })
-           /*  let service= await getServiceForAccount(fields.accountId)
-            console.log('object')
-            let channel=io.of(`/${files.file.id}`)
-            channel.on("connection",()=>{
-              //  console.log('test')
-            })
-            res.end()
-            service.uploadFile(files.file,fields.folderId,(percent)=>{
-                console.log(percent+'%')
-                channel.emit("progress",percent)
-            }) */
         });
     } catch (error) {
         console.log(error)
         res.end()
     }
-    //res.end()
 })
 
 
