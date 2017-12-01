@@ -1,10 +1,12 @@
 const express = require('express')
 const axios = require('axios').default
 const formidable = require('formidable');
+const shortid = require('shortid');
 const {getServiceForAccount}= require('../explorers');
 const router= express.Router()
 const accounts= require('../models/account.model');
 const socket= require('../socket')
+const task = require('../task');
 
 
 router.get('/:id/:folderId?',async function (req, res) {
@@ -39,27 +41,27 @@ router.get("/:id/file/:fileId",async function (req, res){
 
 router.post("/upload",async(req,res)=>{
    
-    try { 
+    try {
         let io= socket.getServer()
         let form = new formidable.IncomingForm();
         form.parse(req, async(err, fields, files)=> {
-            let service= await getServiceForAccount(fields.accountId)
-            console.log('object')
-            let channel=io.of(`/${files.file.id}`)
-            channel.on("connection",()=>{
-              //  console.log('test')
-            })
-            res.end()
-            service.uploadFile(files.file,fields.folderId,(percent)=>{
-                console.log(percent+'%')
-                channel.emit("progress",percent)
+            let jobId= shortid()
+            let {accountId,folderId}=fields
+            let jobData={
+                accountId,
+                folderId,
+                file:files.file,
+                jobId
+            }
+            task.now("upload",jobData,(err,job)=>{
+               if(err){throw err}
+               res.json({jobId})
             })
         });
     } catch (error) {
         console.log(error)
         res.end()
     }
-    
 })
 
 

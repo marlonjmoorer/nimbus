@@ -118,16 +118,6 @@ export default new Vuex.Store({
       async uploadFile({commit},file){
         console.log(file)
         if(file){
-        /*   let form= new FormData()
-          let {name ,size,type}=file
-          form.append("data",file);
-         // form.append('metadata',{name,size,type})
-          axios.post("explorer/upload",form,{onUploadProgress:(e)=>{
-            console.log(e)
-            console.log(`${Math.floor(e.loaded/e.total*100)}%`)
-          }}).then(()=>{
-            console.log("done")
-          }) */
          commit("QUEUE_UPLOAD",file)
         }
       }
