@@ -48,8 +48,9 @@ export default {
             this.percent=Math.floor(e.loaded / e.total * 100);
           }
         })
-        .then(() => {
-          let socket= io(`/${data.file.id}`)
+        .then((res) => {
+          console.log(res)
+          let socket= io(`/${res.data.jobId}`)
           socket.on("progress",(num)=>{
             this.percent=num
           })

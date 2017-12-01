@@ -36,7 +36,7 @@ module.exports = class DropboxExplorer extends Explorer {
         return folder
     }
 
-    async uploadFile(file, folderId, onProgess, onComplete) {
+    async uploadFile2(file, folderId, onProgess, onComplete) {
         let stream = file.stream
         let path = ""
         if (folderId) {
@@ -63,7 +63,7 @@ module.exports = class DropboxExplorer extends Explorer {
       
     }
 
-    async uploadLargeFile(file, folderId, onProgess, onComplete) {
+    async uploadFile(file, folderId, onProgess, onComplete) {
         let stream = fs.createReadStream(file.path, {
             highWaterMark: 1 *1024 * 1024
         })
@@ -111,7 +111,7 @@ module.exports = class DropboxExplorer extends Explorer {
             }
         })
 
-        /* stream.on("end",async()=>{
+        stream.on("end",async()=>{
                 let result = await this.client.filesUploadSessionFinish({
                     commit:{
                         path:`${path}/${file.name}`,
@@ -129,18 +129,11 @@ module.exports = class DropboxExplorer extends Explorer {
                     onComplete()
                 }
                 console.log(result)
-            }) */
+        }) 
 
        
         let buf = []
-        stream.pipe(new PassThrough({
-            transform(chunk, encoding, callback) {
-                buf.push(chunk)
-                callback()
-            }
-        })).on("end", () => {
-            fs.createReadStream(Buffer.concat(buf), {highWaterMark: 1 *1024*1024})
-        })
+        stream.pipe(writer)
 
       
     }
